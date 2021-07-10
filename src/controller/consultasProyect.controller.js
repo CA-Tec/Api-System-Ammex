@@ -8,6 +8,12 @@ consulProyectCtrl.getTotal =async(req,res)=>{
     res.json(totales);
 }
 
+consulProyectCtrl.getTerminados =async(req,res)=>{
+    const terminados = await Proyecto.find({status:'TERMINADO'}).count();
+
+    res.json(terminados);
+}
+
 consulProyectCtrl.getVencidos=async(req,res)=>{
     const vencidos = await Proyecto.find({transcurrido:{$lt:0}});
     res.json(vencidos);

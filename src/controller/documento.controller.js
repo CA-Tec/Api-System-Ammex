@@ -1,4 +1,10 @@
 const documentoCtrl ={};
+const aws = require('aws-sdk');
+const { S3_ENDPOINT, BUCKET_NAME } = process.env;
+const spacesEndpoint = new aws.Endpoint(S3_ENDPOINT);
+const s3 = new aws.S3({
+    endpoint: spacesEndpoint
+});
 
 const Documento = require('../models/documentos');
 const CatDocumento = require('../models/catDocumento');
@@ -17,7 +23,7 @@ documentoCtrl.uploadFile = async (req,res)=>{
     newDocumento.alias = consulta.aliasDoc;
     console.log(newDocumento);
     await newDocumento.save();
-    await Proyectos.findByIdAndUpdate(req.body.proyecto,{etapas:'Documentos',documentos:consulta.aliasDoc});
+    await Proyectos.findByIdAndUpdate(req.body.proyecto,{etapas:'Documentos',$addToSet:{documentos:consulta.aliasDoc}});
     res.json({message:"Documento Agregado"});
 }
 
@@ -28,6 +34,27 @@ documentoCtrl.getDocumentos=async(req, res)=>{
         res.json(documentos);    
 
 }
+
+
+documentoCtrl.deleteDoc=async(req, res)=>{
+ const datos= await Documento.findById(req.params.id);
+ console.log(datos);
+    
+var params = {
+    Bucket: BUCKET_NAME,
+    Key: datos.nombreDoc
+};
+
+s3.deleteObject(params, function(err, data) {
+   if (err) console.log(err, err.stack);
+   else     console.log(data);
+});
+
+await Documento.findByIdAndDelete(req.params.id);
+
+res.json({message:'Documento eliminado'});
+}
+
 
 
 module.exports = documentoCtrl;

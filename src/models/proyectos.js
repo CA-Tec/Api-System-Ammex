@@ -13,7 +13,7 @@ const proyectosSchema =new Schema({
     fechaTermino:{type:Date,required:true},
     duracion:{type:String,required:true},
     transcurrido:{type:Number},
-    documentos:{type:String},
+    documentos:[],
     costoAprox:{type:String},
     obProyect:{type:String},
     pepProyect:{type:String},
