@@ -23,7 +23,7 @@ const proyectosSchema =new Schema({
     observacionProyect:{type:String},
     status:{type:String},
     etapas:{type:String},
-    usuario:{type:Schema.ObjectId, ref:"usuarios"}
+    usuario:{type:String}
 },{
     timestamps:true,
     versionKey:false
